@@ -1,0 +1,84 @@
+<html><head></head><body><div id="aframe-body">
+		<meta charset="utf-8"><script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script><script>
+			AFRAME.registerComponent("linklocation", {
+			schema: {
+				type: "string"
+			},
+			init: function() {
+				this.el.setAttribute("link","visualAspectEnabled:false;href:"+this.data)
+				this.el.setAttribute("")
+				this.el.addEventListener("click", () => {
+					this.el.navigate(this.data);
+				});
+			}
+		});
+		AFRAME.registerComponent("quiz", {
+			schema: {
+				title: {
+					type: "string"
+				},
+				bgColor: {
+					type: "string"
+				},
+				textColor: {
+					type: "string"
+				},
+				answered: {
+					default: false
+				}
+			},
+			init: function() {
+				this.el.setAttribute("geometry", "primitive:plane;width:1;height:0.2;");
+				this.el.setAttribute("material", "opacity:0.5;transparent:true;color:" + this.data.bgColor);
+				this.el.setAttribute("text", "wrapCount:20;align:center;color:" + this.data.textColor);
+				this.el.setAttribute("text", "value", this.data.title);
+				let options = this.el.querySelectorAll("*[quiz-answer],*[quiz-correct]"); /* random order the positions of the items */
+				let array = [0, 1, 2];
+				let currentIndex = array.length;
+				let temporaryValue, randomIndex;
+				while (0 !== currentIndex) {
+					randomIndex = Math.floor(Math.random() * currentIndex);
+					currentIndex -= 1; /* switch their places */
+					temporaryValue = array[currentIndex];
+					array[currentIndex] = array[randomIndex];
+					array[randomIndex] = temporaryValue;
+				}
+				for (let i = 0; i < options.length; i++) {
+					options[i].object3D.position.set(0, -(array[i] + 1) * 0.2, 0.001);
+					options[i].setAttribute("geometry", "primitive:plane;width:1;height:0.2;");
+					options[i].setAttribute("material", "opacity:0.5;transparent:true;color:" + this.data.bgColor);
+					options[i].setAttribute("text", "wrapCount:20;align:center;color:" + this.data.textColor);
+					options[i].addEventListener("click", function() {
+						this.setAttribute("material", "color", "red");
+						if (this.parentElement.getAttribute("quiz").answered == false) {
+							this.parentElement.querySelector("*[quiz-correct]").setAttribute("material", "color", "green");
+							this.parentElement.setAttribute("quiz", "answered", false);
+						}
+					});
+				}
+			}
+		});
+		AFRAME.registerComponent("quiz-answer", {
+			schema: {
+				type: "string"
+			},
+			init: function() {
+				this.el.setAttribute("text", "value", this.data);
+			}
+		});
+		AFRAME.registerComponent("quiz-correct", {
+			schema: {
+				type: "string"
+			},
+			init: function() {
+				this.el.setAttribute("text", "value", this.data);
+			}
+		});
+			</script>
+			<style>
+				#videoElement{
+					display:none;
+				}
+			</style>
+			<div id="camera"></div><a-scene class="scene" inspector="url:https://unpkg.com/aframe-inspector@0.8.x/dist/aframe-inspector.min.js" keyboard-shortcuts="enterVR:true;exitVR:true" screenshot="width:4096;height:2048;camera:null" vr-mode-ui="enabled:true"><a-camera position="-4.370351896076735 1.6 3.2669146055948985" rotation="2.7501974166279477 306.18864571791397 0" scale="1 1 1" visible="true" camera="" look-controls="" wasd-controls=""><a-entity cursor="fuse:false" id="cursor" raycaster="objects:a-entity;useWorldCoordinates:false" position="0 0 -0.4" geometry="primitive:ring;radiusInner:0.008;radiusOuter:0.012" material="color:black;shader:flat" rotation="0 0 0" scale="1 1 1" visible="true"></a-entity></a-camera><a-assets></a-assets><a-sky id="image-360" radius="100" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/sechelt.jpg" position="0 0 0" rotation="0 0 0" scale="-1 1 1" visible="true" material="color:#FFF;side:back;shader:flat;npot:true;src:https://cdn.aframe.io/360-image-gallery-boilerplate/img/sechelt.jpg" geometry="primitive:sphere;radius:100;segmentsWidth:64;segmentsHeight:32"></a-sky><canvas class="a-canvas a-grab-cursor" data-aframe-canvas="true" width="1200" height="600"></canvas><div class="a-enter-vr embedded" aframe-injected=""><button class="a-enter-vr-button" title="Enter VR mode with a headset or fullscreen mode on a desktop. Visit https://webvr.rocks or https://webvr.info for more information." aframe-injected=""></button></div><div class="a-orientation-modal a-hidden" aframe-injected=""><button aframe-injected="">Exit VR</button></div><a-entity light="color:#BBB;type:ambient" data-aframe-default-light="" aframe-injected="" position="0 0 0" rotation="0 0 0" scale="1 1 1" visible="true"></a-entity><a-entity light="color:#FFF;intensity:0.6;castShadow:true" position="-0.5 1 1" data-aframe-default-light="" aframe-injected="" rotation="0 0 0" scale="1 1 1" visible="true"></a-entity><a-entity id="entity1vr" position="0 0 0" rotation="0 0 0" scale="1 1 1" visible="true"></a-entity><a-entity id="entity1vr" position="0 0 0" rotation="0 0 0" scale="1 1 1" visible="true"><a-entity class="model" position="0 0 0" rotation="0 0 0" scale="1 1 1" visible="true" gltf-model="https://aframe-tools.sourceforge.io/models/1.0/crate.glb"></a-entity></a-entity><a-entity id="entity2vr" position="-3.6739403974420594e-16 18 -2" rotation="0 0 0" scale="1 1 1" visible="true"><a-entity class="model" position="0 0 0" rotation="0 0 0" scale="1 1 1" visible="true" gltf-model="https://aframe-tools.sourceforge.io/models/1.0/Low_Poly_Earth.glb"></a-entity></a-entity><a-entity id="entity3vr" quiz="0:t;1:r;2:u;3:e;title:what colors are earth?;bgColor:black;textColor:white" position="-1.8369701987210297e-16 6 -1" rotation="0 0 0" scale="1 1 1" visible="true" geometry="primitive:plane;width:1;height:0.2" material="opacity:0.5;transparent:true;color:" text="wrapCount:20;align:center;color:;value:"><a-entity quiz-correct="blue and green" class="correct" position="0 0 0" rotation="0 0 0" scale="1 1 1" visible="true" text="value:;wrapCount:20;align:center;color:" geometry="primitive:plane;width:1;height:0.2" material="opacity:0.5;transparent:true;color:"></a-entity><a-entity quiz-answer="black and green" class="answer1" position="0 0 0" rotation="0 0 0" scale="1 1 1" visible="true" text="value:;wrapCount:20;align:center;color:" geometry="primitive:plane;width:1;height:0.2" material="opacity:0.5;transparent:true;color:"></a-entity><a-entity quiz-answer="purple and red" class="answer2" position="0 0 0" rotation="0 0 0" scale="1 1 1" visible="true" text="value:;wrapCount:20;align:center;color:" geometry="primitive:plane;width:1;height:0.2" material="opacity:0.5;transparent:true;color:"></a-entity></a-entity><a-entity id="entity4vr" material="transparent:true;alphaTest:0.5" geometry="primitive:plane;height:1;width:1" position="-3.6739403974420594e-16 -2 0" rotation="0 0 0" scale="1 1 1" visible="true"></a-entity></a-scene><script>var cursor=document.querySelector("#cursor");cursor.addEventListener("mousedown",()=>{cursor.setAttribute("material","color:grey")});cursor.addEventListener("mouseup",()=>{cursor.setAttribute("material","color:black")});cursor.addEventListener("mouseenter",()=>{cursor.setAttribute("scale","0.7 0.7 0.7")});cursor.addEventListener("mouseleave",()=>{cursor.setAttribute("scale","1 1 1")});</script>
+		</div></body></html>
